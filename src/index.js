@@ -1,22 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import withHooks from './withHooks'
+import * as hooks from './withHooks'
 
-import styles from './styles.css'
+const useNative = Boolean(React.useState)
 
-export default class ExampleComponent extends Component {
-  static propTypes = {
-    text: PropTypes.string
-  }
-
-  render() {
-    const {
-      text
-    } = this.props
-
-    return (
-      <div className={styles.test}>
-        Example Component: {text}
-      </div>
-    )
-  }
-}
+export const useState = useNative ? React.useState : hooks.useState
+export const useEffect = useNative ? React.useEffect : hooks.useEffect
+export const useContext = useNative ? React.useContext : hooks.useContext
+export const useReducer = useNative ? React.useReducer : hooks.useReducer
+export const useCallback = useNative ? React.useCallback : hooks.useCallback
+export const useMemo = useNative ? React.useMemo : hooks.useMemo
+export const useRef = useNative ? React.useRef : hooks.useRef
+export const useImperativeMethods = useNative
+  ? React.useImperativeMethods
+  : hooks.useImperativeMethods
+export const useMutationEffect = useNative
+  ? React.useMutationEffect
+  : hooks.useMutationEffect
+export const useLayoutEffect = useNative
+  ? React.useLayoutEffect
+  : hooks.useLayoutEffect
+export default (useNative ? fn => fn : withHooks)

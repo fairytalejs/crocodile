@@ -10,22 +10,6 @@
 npm install --save @fairytale/crocodile
 ```
 
-## Usage
-
-```jsx
-import React, { Component } from 'react'
-
-import MyComponent from '@fairytale/crocodile'
-
-class Example extends Component {
-  render () {
-    return (
-      <MyComponent />
-    )
-  }
-}
-```
-
 ## License
 
 MIT © [aarondancer](https://github.com/aarondancer)

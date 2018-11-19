@@ -1,7 +1,12 @@
 {
   "presets": [
     ["env", {
-      "modules": false
+      "modules": false,
+      "loose": true,
+      "targets": {
+        "esmodules": true
+      },
+      "useBuiltIns": "entry"
     }],
     "stage-0",
     "react"

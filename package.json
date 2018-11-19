@@ -23,11 +23,12 @@
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "~16.6.0 || ~16.7.0 || next",
+    "react-dom": "~16.6.0 || ~16.7.0 || next"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
+    "@types/react": "16.7.6",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
     "babel-plugin-external-helpers": "^6.22.0",
@@ -35,6 +36,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "cross-env": "^5.1.4",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.7.0",
     "eslint": "^5.0.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-config-standard-react": "^6.0.0",
@@ -56,6 +59,7 @@
     "rollup-plugin-url": "^1.4.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ]
 }
