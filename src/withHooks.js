@@ -2,9 +2,9 @@ import React from 'react'
 import invariant from 'invariant'
 
 const RE_RENDER_LIMIT = 25
-const NoEffect = /*             */ 0b00000000
-const MountPassive = /*         */ 0b01000000
-const UnmountPassive = /*       */ 0b10000000
+const NoEffect = 0b00000000
+const MountPassive = 0b01000000
+const UnmountPassive = 0b10000000
 
 let firstWorkInProgressHook = null
 let firstCurrentHook = null
@@ -28,7 +28,7 @@ function prepareToUseHooks(current) {
 }
 
 function finishHooks(Component, props, children, refOrContext) {
-  while (didScheduleRenderPhaseUpdate) {
+  while (didScheduleRenderPhaseUpdate === true) {
     // Updates were scheduled during the render phase. They are stored in
     // the `renderPhaseUpdates` map. Call the component again, reusing the
     // work-in-progress hooks and applying the additional updates on top. Keep
@@ -64,7 +64,7 @@ function finishHooks(Component, props, children, refOrContext) {
   isRenderPhase = false
 
   invariant(
-    !didRenderTooFewHooks,
+    didRenderTooFewHooks === false,
     'Rendered fewer hooks than expected. This may be caused by an accidental ' +
       'early return statement.'
   )
@@ -131,7 +131,7 @@ function createWorkInProgressHook() {
   } else {
     if (workInProgressHook.next === null) {
       isReRender = false
-      var hook = void 0
+      let hook
 
       if (currentHook === null) {
         // This is a newly mounted hook
@@ -167,16 +167,16 @@ function createFunctionComponentUpdateQueue() {
 }
 
 function inputsAreEqual(arr1, arr2) {
-  for (let i = 0; i < arr1.length; i++) {
+  for (let i = 0; i < arr1.length; i += 1) {
     const val1 = arr1[i]
     const val2 = arr2[i]
+
     if (
-      (val1 === val2 && (val1 !== 0 || 1 / val1 === 1 / val2)) ||
-      (val1 !== val1 && val2 !== val2)
+      ((val1 === val2 && (val1 !== 0 || 1 / val1 === 1 / val2)) ||
+        (val1 !== val1 && val2 !== val2)) === false
     ) {
-      continue
+      return false
     }
-    return false
   }
   return true
 }
@@ -213,7 +213,8 @@ function dispatchAction(instance, queue, action) {
     'Too many re-renders. React limits the number of renders to prevent ' +
       'an infinite loop.'
   )
-  if (isRenderPhase) {
+
+  if (isRenderPhase === true) {
     // This is a render phase update. Stash it in a lazily-created map of
     // queue -> linked list of updates. After this render pass, we'll restart
     // and apply the stashed updates on top of the work-in-progress hook.
@@ -268,6 +269,7 @@ export function useEffect(create, inputs) {
 
   let nextInputs = inputs !== undefined && inputs !== null ? inputs : [create]
   let destroy = null
+
   if (currentHook !== null) {
     const prevEffect = currentHook.memoizedState
     destroy = prevEffect.destroy
@@ -288,7 +290,7 @@ export function useEffect(create, inputs) {
 export function useContext(context) {
   const dispatcher = getDispatcher()
 
-  if (!dispatcher) {
+  if (dispatcher === null || dispatcher === undefined) {
     throw new Error(
       'Oh no! You are either trying to use this.useContext() outside of a classes render function, or you may not be running React 16.6 or higher.'
     )
@@ -308,7 +310,7 @@ export function useReducer(reducer, initialState, initialAction) {
   let queue = workInProgressHook.queue
   if (queue !== null) {
     // Already have a queue, so this is an update.
-    if (isReRender) {
+    if (isReRender === true) {
       // This is a re-render. Apply the new render phase updates to the previous
       // work-in-progress hook.
       const dispatch = queue.dispatch
@@ -362,6 +364,7 @@ export function useReducer(reducer, initialState, initialAction) {
     } else {
       first = last !== null ? last.next : null
     }
+
     if (first !== null) {
       let newState = workInProgressHook.baseState
       let newBaseState = null
@@ -369,6 +372,7 @@ export function useReducer(reducer, initialState, initialAction) {
       let prevUpdate = baseUpdate
       let update = first
       let didSkip = false
+
       do {
         // Process this update.
         const action = update.action
@@ -377,7 +381,7 @@ export function useReducer(reducer, initialState, initialAction) {
         update = update.next
       } while (update !== null && update !== first)
 
-      if (!didSkip) {
+      if (didSkip === false) {
         newBaseUpdate = prevUpdate
         newBaseState = newState
       }
@@ -413,10 +417,6 @@ export function useReducer(reducer, initialState, initialAction) {
   return [workInProgressHook.memoizedState, dispatch]
 }
 
-export function useCallback(fn, deps) {
-  return useMemo(() => fn, deps)
-}
-
 export function useMemo(nextCreate, inputs) {
   const workInProgressHook = createWorkInProgressHook()
 
@@ -424,6 +424,7 @@ export function useMemo(nextCreate, inputs) {
     inputs !== undefined && inputs !== null ? inputs : [nextCreate]
 
   const prevState = workInProgressHook.memoizedState
+
   if (prevState !== null) {
     const prevInputs = prevState[1]
     if (inputsAreEqual(nextInputs, prevInputs)) {
@@ -432,8 +433,14 @@ export function useMemo(nextCreate, inputs) {
   }
 
   const nextValue = nextCreate()
+
   workInProgressHook.memoizedState = [nextValue, nextInputs]
+
   return nextValue
+}
+
+export function useCallback(fn, deps) {
+  return useMemo(() => fn, deps)
 }
 
 export function useRef(initialValue) {
@@ -449,26 +456,27 @@ export function useRef(initialValue) {
   return ref
 }
 
-export function useImperativeMethods(ref, create, inputs) {
+export function useImperativeMethods(ref, createFn, inputs) {
   // TODO: If inputs are provided, should we skip comparing the ref itself?
   const nextInputs =
     inputs !== null && inputs !== undefined
       ? inputs.concat([ref])
-      : [ref, create]
+      : [ref, createFn]
 
-  // TODO: I've implemented this on top of useEffect because it's almost the
-  // same thing, and it would require an equal amount of code. It doesn't seem
-  // like a common enough use case to justify the additional size.
   useEffect(() => {
     if (typeof ref === 'function') {
       const refCallback = ref
-      const inst = create()
+      const inst = createFn()
+
       refCallback(inst)
+
       return () => refCallback(null)
     } else if (ref !== null && ref !== undefined) {
       const refObject = ref
-      const inst = create()
+      const inst = createFn()
+
       refObject.current = inst
+
       return () => {
         refObject.current = null
       }
@@ -476,15 +484,11 @@ export function useImperativeMethods(ref, create, inputs) {
   }, nextInputs)
 }
 
-export function useMutationEffect(...args) {
-  return useEffect(...args)
-}
+export const useMutationEffect = useEffect
 
-export function useLayoutEffect(...args) {
-  return useEffect(...args)
-}
+export const useLayoutEffect = useEffect
 
-export default function withHooks(render) {
+export function withHooks(render) {
   class WithHooks extends React.Component {
     componentDidMount() {
       this.commitHookEffectList(UnmountPassive, NoEffect)
@@ -503,9 +507,11 @@ export default function withHooks(render) {
     commitHookEffectList(unmountTag, mountTag) {
       let lastEffect =
         this.updateQueue !== null ? this.updateQueue.lastEffect : null
+
       if (lastEffect !== null) {
         const firstEffect = lastEffect.next
         let effect = firstEffect
+
         do {
           if ((effect.tag & unmountTag) !== NoEffect) {
             // Unmount
@@ -519,6 +525,7 @@ export default function withHooks(render) {
         } while (effect !== firstEffect)
 
         effect = firstEffect
+
         do {
           if ((effect.tag & mountTag) !== NoEffect) {
             // Mount
@@ -532,19 +539,19 @@ export default function withHooks(render) {
     }
 
     callDestroy() {
-      const updateQueue = this.updateQueue
+      const { updateQueue } = this
 
       if (updateQueue !== null) {
-        var lastEffect = updateQueue.lastEffect
+        const lastEffect = updateQueue.lastEffect
 
         if (lastEffect !== null) {
-          var firstEffect = lastEffect.next
-          var effect = firstEffect
+          const firstEffect = lastEffect.next
+          let effect = firstEffect
 
           do {
-            var destroy = effect.destroy
+            const destroy = effect.destroy
 
-            if (destroy !== null) {
+            if (typeof destroy === 'function') {
               destroy()
             }
 
@@ -557,14 +564,22 @@ export default function withHooks(render) {
     render() {
       resetHooks()
       prepareToUseHooks(this)
+
       const { _forwardedRef, ...rest } = this.props
+
       isRenderPhase = true
+
       const nextChildren = render(rest, _forwardedRef)
+
       return finishHooks(render, rest, nextChildren, _forwardedRef)
     }
   }
+
   WithHooks.displayName = render.displayName || render.name
+
   const wrap = (props, ref) => <WithHooks {...props} _forwardedRef={ref} />
+
   wrap.displayName = `WithHooks(${WithHooks.displayName})`
+
   return wrap
 }

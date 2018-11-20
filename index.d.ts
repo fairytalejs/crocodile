@@ -16,7 +16,8 @@ import {
   SFC
 } from 'react'
 
-export default function withHooks<P>(Component: SFC<P>): SFC<P>;
+export function withHooks<P>(Component: SFC<P>): SFC<P>;
+export default withHooks;
 
 // This will technically work if you give a Consumer<T> or Provider<T> but it's deprecated and warns
 /**

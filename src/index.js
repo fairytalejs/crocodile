@@ -1,5 +1,4 @@
 import React from 'react'
-import withHooks from './withHooks'
 import * as hooks from './withHooks'
 
 const useNative = Boolean(React.useState)
@@ -20,4 +19,5 @@ export const useMutationEffect = useNative
 export const useLayoutEffect = useNative
   ? React.useLayoutEffect
   : hooks.useLayoutEffect
-export default (useNative ? fn => fn : withHooks)
+export const withHooks = useNative ? fn => fn : hooks.withHooks
+export default withHooks
