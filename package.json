@@ -1,6 +1,6 @@
 {
   "name": "@fairytale/crocodile",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ponyfill for React Hooks in 16.6",
   "author": "aarondancer",
   "license": "MIT",
