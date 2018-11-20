@@ -24,7 +24,8 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "~16.6.0 || ~16.7.0 || next",
-    "react-dom": "~16.6.0 || ~16.7.0 || next"
+    "react-dom": "~16.6.0 || ~16.7.0 || next",
+    "invariant": "^2.2.4"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
