@@ -1,10 +1,13 @@
 {
   "name": "@fairytale/crocodile",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Ponyfill for React Hooks in 16.6",
   "author": "aarondancer",
   "license": "MIT",
-  "repository": "@fairytalejs/crocodile",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fairytalejs/crocodile"
+  },
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",

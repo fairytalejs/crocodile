@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.2
+- Fixed typings for useRef
+
 ### 1.0.1
 - Performance improvements
 - Make `withHooks` a named export in addition to being the default

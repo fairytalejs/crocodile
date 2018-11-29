@@ -2,22 +2,21 @@
 // Project: https://github.com/fairytalejs/crocodile
 // Definitions by: Aaron Dancer <https://github.com/aarondancer>
 // TypeScript Version 3.1
-
 import {
   Context,
-  RefObject,
-  Ref,
   Dispatch,
-  SetStateAction,
-  Reducer,
-  MutableRefObject,
   EffectCallback,
   InputIdentityList,
+  MutableRefObject,
+  Reducer,
+  Ref,
+  RefObject,
+  SetStateAction,
   SFC
 } from 'react'
 
-export function withHooks<P>(Component: SFC<P>): SFC<P>;
-export default withHooks;
+export function withHooks<P>(Component: SFC<P>): SFC<P>
+export default withHooks
 
 // This will technically work if you give a Consumer<T> or Provider<T> but it's deprecated and warns
 /**
@@ -64,9 +63,8 @@ export function useReducer<S, A>(
  * @version experimental
  * @see https://reactjs.org/docs/hooks-reference.html#useref
  */
-export type useRef =
-  | (<T extends unknown>(initialValue: T) => MutableRefObject<T>)
-  | (<T extends unknown>(initialValue: T | null) => RefObject<T>)
+export function useRef<T>(initialValue: T): React.MutableRefObject<T>
+export function useRef<T>(initialValue: T | null): React.RefObject<T>
 
 /**
  * The signature is identical to `useEffect`, but it fires synchronously during the same phase that
